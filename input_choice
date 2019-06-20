@@ -1,4 +1,4 @@
-
+//https://stackoverflow.com/questions/47080683/read-interactive-input-in-jenkins-pipeline-to-a-variable
 node {
     stage('Wait for user to input text?') {
         def userInput = input id: 'UserInput', message: 'Merge to?', 
