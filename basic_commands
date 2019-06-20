@@ -1,0 +1,129 @@
+node{
+  stage("basic Commands"){
+    // clean allways workspace. check the "pipeline-syntax" for variants
+    cleanWs()
+    
+    echo sh(script: 'env|sort', returnStdout: true) //Show all environment variables
+    sh label: '1', script: 'ls' //Show current files and directories
+    sh(script: "ls") //Show current files and directories
+    
+    sh label: '1', script: "echo ${PWD}" //Show de current directory
+    echo pwd() //function current directory
+    
+    def namevariable = "Hello variable" //Define una variable
+    sh label: '1', script: "echo ${namevariable}" //para acceder a la variable ${namevariable}
+    sh(script: "echo ${namevariable}") //para acceder a la variable ${namevariable}
+    
+    //validate if file exist
+    if (fileExists('filename')) {
+      echo "Existe el archivo function [fileExists()]";
+    }else{
+      echo "No existe el archivo function [fileExists()]";
+    }
+    
+    //validate if file exist
+    def exists = fileExists 'docker-java-hello:2.0.0'
+    if(exists){
+      echo "Existe el archivo variable [exists]";
+    }else{
+      echo "No existe el archivo variable [exists]";
+    }
+    
+    // return type SO
+    if(isUnix()){
+       echo "Commands unix";
+    } else {
+      echo "Commands windows";
+    }
+    
+    // clean allways workspace. check the "pipeline-syntax" for variants
+    cleanWs()
+  }
+  
+	stage("Checkout"){
+	    cleanWs()
+		git credentialsId: 'git_cred', url: 'https://github.com/gandradecrucialsoft/jenkins-docker.git'
+		sh label: '1', script: 'git config -l'
+		sh label: '1', script: 'ls'
+	}
+	/*stage("Compile"){
+	    sh label: '1', script: 'ls'
+    	dir('docker-java-hello') {
+            echo 'cambia de carpeta'
+            echo sh(script: 'env|sort', returnStdout: true)
+            def jdkHome = tool name: '8_212', type: 'jdk'
+            
+            sh label: '1', script: 'ls'
+            sh label: '2', script: "${jdkHome}/bin/javac Hello.java"
+            sh label: '3', script: "${jdkHome}/bin/java Hello"
+        }
+	}*/
+	stage("Build Docker"){
+	    echo 'generando imagen'
+	     sh label: '1', script: "echo ${PWD}"
+	     sh label: '1', script: 'ls'
+	    dir('docker-java-hello') {
+	        echo 'generando imagen sub'
+	        sh label: '1', script: "echo ${PWD}"
+	        sh label: '1', script: 'ls'
+	        
+	        def dockerHome = tool name: 'docker-latest', type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
+	        
+	        echo 'ls dockerHome'
+	        sh label: '1', script: "ls ${dockerHome}"
+	        echo 'ls dockerHome\bin'
+	        sh label: '1', script: "ls ${dockerHome}/bin"
+	        echo 'command dockerHome\bin'
+	        
+	        sh label: '1', script: "${dockerHome}/bin/docker version"
+	        sh label: '1', script: "${dockerHome}/bin/docker images"
+	        
+	        //sh label: '1', script: "${dockerHome}/bin/docker rmi ${docker images -f 'dangling=true' -q}"
+	        //sh label: '1', script: "${dockerHome}/bin/docker images"
+	        
+	        def exists = fileExists 'docker-java-hello:2.0.0'
+	        if (fileExists('docker-java-hello:2.0.0')) {
+	            sh label: '1', script: "${dockerHome}/bin/docker rmi docker-java-hello:2.0.0"
+	            sh label: '1', script: "${dockerHome}/bin/docker images"
+      	    }
+      	    
+	        sh label: '1', script: "${dockerHome}/bin/docker build -t docker-java-hello:2.0.0 ."
+	        sh label: '1', script: "${dockerHome}/bin/docker images"
+	        
+	        def existsExport = fileExists 'docker-java-hello.tar'
+	        if (fileExists('docker-java-hello.tar')) {
+	            sh label: '1', script: "rm docker-java-hello.tar"
+	        }
+	        if (fileExists('docker-java-hello.tar.gz')) {
+	            sh label: '1', script: "rm docker-java-hello.tar.gz"
+	        }
+	        sh label: '1', script: "${dockerHome}/bin/docker save docker-java-hello | gzip -c > docker-java-hello.tar.gz"
+	        
+	        sh label: '1', script: 'ls -l docker-java-hello.tar.gz'
+	        
+	        sh label: '1', script: 'split -b 50M docker-java-hello.tar.gz'
+	        
+	        if (fileExists('docker-java-hello.tar.gz')) {
+	            sh label: '1', script: "rm docker-java-hello.tar.gz"
+	        }
+	        
+    	    sh label: '1', script: 'ls'
+	    }    
+	}
+	stage("Upload Docker to Git"){
+	     sh label: '1', script: "echo ${PWD}"
+	     sh label: '1', script: 'ls'
+	     sh label: '1', script: "git config --global user.name 'gandradecrucialsoft'"
+		 sh label: '1', script: 'git config --global user.email gandrade@crucialsoft.com.mx'
+		 sh label: '1', script: 'git add .'
+		 sh label: '1', script: 'git commit -m "first commit jenkins"'
+		 
+		 withCredentials([usernamePassword(credentialsId: 'git_cred', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+			sh('git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/gandradecrucialsoft/jenkins-docker.git')
+		 }
+	     
+	    /*dir('docker-java-hello') {
+			sh label: '1', script: 'ls'
+	    }*/
+	}
+}
