@@ -1,3 +1,4 @@
+//https://stackoverflow.com/questions/47080683/read-interactive-input-in-jenkins-pipeline-to-a-variable
 pipeline {
     agent any
 
