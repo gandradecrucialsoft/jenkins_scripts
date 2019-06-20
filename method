@@ -1,0 +1,14 @@
+//https://issues.jenkins-ci.org/browse/JENKINS-41396
+pipeline {
+    agent any
+    stages {
+        stage ('Example') {
+            steps {
+                myHelper()
+            }
+        }
+    }
+}
+def myHelper() {
+    echo "Some complex set of steps"
+}
