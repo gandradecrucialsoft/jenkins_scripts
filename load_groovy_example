@@ -1,5 +1,5 @@
 //http://tdongsi.github.io/blog/2017/04/18/groovy-code-in-jenkins-pipeline/
-
+//https://github.com/jenkinsci/pipeline-examples/tree/master/pipeline-examples/load-from-file
 def code
 
 node{
