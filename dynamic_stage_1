@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+    stages {
+        stage('Example') {
+            steps {
+                echo 'Hello World'
+
+                script {
+                    def hostnameMap = ['s1','s2','s3']
+                    def hostname
+                    for (int i = 0; i < hostnameMap.size(); i++) {
+                        echo "Testing the ${hostnameMap[i]} browser"
+                        hostname = hostnameMap[i]
+                        echo 'Executing ' + hostname
+                        stage('Backup previous build ' + hostname) {
+                            echo 'backup'
+                        }
+                        stage('Deploy ' + hostname) {
+                            echo 'deploy'
+                        }
+                        stage('Restart ' + hostname) {
+                            echo 'restart'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
