@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+    parameters {
+        choice(choices: ['all', 's1', 's2'], description: 'What stage run?', name: 'region')
+    }
+    stages {
+        stage("Stage 1"){
+                steps {
+                    script {
+                        if(params.region in ['all','s1']){
+                            echo "stage 1"    
+                        }
+                    }
+                }
+        }
+        stage("Stage 2 "){
+            steps {
+                script {
+                    if(params.region in ['all','s2']){
+                        echo "stage 2"    
+                    }
+                }
+            }
+        }
+    }
+}
