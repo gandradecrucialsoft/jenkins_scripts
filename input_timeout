@@ -1,0 +1,8 @@
+timeout(time:1, unit:'MINUTES') {
+    input message:'Approve deployment?', submitter: 'it-ops'
+}
+node{
+    stage('inicio'){
+        echo "hola"
+    }
+}
