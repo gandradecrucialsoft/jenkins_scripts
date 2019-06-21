@@ -1,3 +1,4 @@
+//https://loadimpact.com/product/integrations-3/performance-testing-jenkins-3/
 import groovy.json.JsonSlurper
 def hostname='192.168.1.58'
 pipeline {
