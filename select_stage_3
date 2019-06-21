@@ -1,0 +1,20 @@
+def hostname='myserver'
+def selected_stages='all'
+node {
+    stage('Wait for user to input text?') {
+        selected_stages = input id: 'UserInput', message: 'What stage run?', 
+    	parameters: [choice(choices:"all\ns1\ns2", description: '', name: 'id_input')
+    	]
+    	println(selected_stages); //Use this value to branch to different logic if needed
+    }
+    stage("Stage 1 "+hostname){
+        if(selected_stages in ['all','s1']){
+            echo "stage 1"    
+        }
+    }
+    stage("Stage 2 "+hostname){
+        if(selected_stages in ['all','s2']){
+            echo "stage 2"    
+        }
+    }
+}
