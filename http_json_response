@@ -1,4 +1,5 @@
 //https://stackoverflow.com/questions/48748443/how-to-return-body-of-an-httprequest-in-the-jenkins-dsl
+//Requiere HTTP Request Plugin
 
 import groovy.json.JsonSlurper
 def hostname='192.168.1.58'
