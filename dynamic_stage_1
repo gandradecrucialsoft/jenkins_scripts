@@ -1,4 +1,5 @@
 //https://stackoverflow.com/questions/49558221/no-such-dsl-method-when-found-among-steps-in-jenkinsfile
+//https://stackoverflow.com/questions/42281200/how-to-do-simple-if-statements-inside-a-declarative-pipeline-in-jenkins
 pipeline {
     agent any
     stages {
