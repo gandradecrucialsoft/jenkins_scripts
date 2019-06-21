@@ -1,0 +1,22 @@
+//https://stackoverflow.com/questions/48748443/how-to-return-body-of-an-httprequest-in-the-jenkins-dsl
+
+import groovy.json.JsonSlurper
+def hostname='192.168.1.58'
+pipeline {
+    agent any 
+    stages {
+        stage('Build') { 
+            steps {
+                script {
+                    //def response = httpRequest "http://${hostname}:90/jenkins/get.php"
+                    def response = httpRequest 'https://dog.ceo/api/breeds/list/all'
+                    echo "Status: ${response.status}"
+                    println('Response: '+response.content)
+                    
+                    def json = new JsonSlurper().parseText(response.content)
+                    echo "Dogs: ${json.message.keySet()}"
+                }
+            }
+        }
+    }
+}
