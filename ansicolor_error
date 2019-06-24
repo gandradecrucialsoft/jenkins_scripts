@@ -1,0 +1,62 @@
+//def e = "XXXXX"
+node{
+    stage('Start') {
+        echo 'This the Start'
+    }
+    stage('Building') {
+        try{
+            currentBuild.rawBuild.result = Result.ABORTED    
+        }catch(Exception e){
+            ansiColor('xterm') {
+                //echo "Normal \e[5mBlink \e[25mNormal"
+                echo "\033[1;31mCaught exception: ${e}\033[0m bla bla"
+                echo "\033[1;31mHello World\033[0m"
+                echo "\033[31mHello\033[0m World"
+                echo "Normal \033[1mBold"
+                echo "Normal \033[2mDim"
+                echo "Normal \033[4mUnderlined"
+                echo "Normal \033[5mBlink"
+                echo "\033[31mRed\033[0m"
+                
+                //
+                
+                echo "Foreground colors"
+                echo "\033[31m Red \033[0m"
+                echo "\033[32m Green \033[0m"
+                echo "\033[33m Yellow \033[0m"
+                echo "\033[34m Blue \033[0m"
+                echo "\033[35m Magneta \033[0m"
+                echo "\033[36m Cyan \033[0m"
+                //
+                echo "Background colors"
+                echo "\033[41m Red \033[0m"
+                echo "\033[42m Green \033[0m"
+                echo "\033[43m Yellow \033[0m"
+                echo "\033[44m Blue \033[0m"
+                echo "\033[45m Magneta \033[0m"
+                echo "\033[46m Cyan \033[0m"
+                //
+                echo "Different combinations"
+
+                echo "\033[1;31m Red \033[0m"
+                echo "\033[1;4;37;42m Green \033[0m"
+                echo "\033[1;43m Yellow \033[0m"
+                echo "\033[1m Bold\033[0m"
+                echo "\033[2m dosM\033[0m"
+                echo "\033[3m tresM\033[0m"
+                echo "\033[4m cuatroM\033[0m"
+                echo "\033[5m cincoM\033[5m"
+                echo "\033[6m seisM\033[0m"
+                echo "\033[7m sieteM\033[0m"
+                echo "\033[8m ochoM\033[0m"
+                echo "\033[9m nueveM\033[0m"
+                echo "\033[10m diezM\033[0m"
+            }
+            error('Failed to build')
+            //success('Here is ok')
+        }
+    }
+    stage('End') {
+        echo 'This the end'
+    }
+}
