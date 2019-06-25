@@ -1,0 +1,51 @@
+import groovy.json.JsonSlurper
+
+def jsonText = '''{
+   "name":"${appServerName}",
+   "fqdn":"${appServerName}"
+}'''
+def variable = "gege"
+
+String parseStringWithVariables(String string,Map map) {
+    for (def data : map) {
+        string = string.replace("\${" + data.getKey() + "}", data.getValue().toString())
+    }
+    return string
+}
+
+Object parseJson(String string) {
+    try{
+        def object = new  JsonSlurper().parseText(string)
+        return object
+    }catch(Exception e){
+        println(e)
+        error("error parse json")
+    }
+    return null
+}
+
+node {
+    stage("Test") {
+        def parsed =  parseStringWithVariables(jsonText, [
+            appServerName: variable
+        ])
+        /*def parsed =  parseJsonWithVariables(jsonText, [
+            appServerName: "gaga"
+        ])*/
+        
+        echo "${parsed}"
+        def object = parseJson(parsed)
+        echo "${object}"
+        echo "${object.name}"
+        echo "${object.fqdn}"
+        /*try{
+            def object = new  JsonSlurper().parseText(parsed)
+            echo "${object}"
+            echo "${object.name}"
+            echo "${object.fqdn}"
+        }catch(Exception e){
+            println(e)
+            error("error parse json")
+        }*/
+    }
+}
