@@ -1,0 +1,73 @@
+//require plugin pipeline-utility-steps
+def hostname='10.200.1.58'
+def json_str = """
+{ 
+	"start": {
+		"url":"http://${hostname}:90/jenkins/get.php",
+		"expected_response":"testing",
+		"time_wait": 5
+	},
+	"testing": {
+		"url":"http://${hostname}:90/jenkins/get.php",
+		"expected_response":"finish",
+		"time_wait": 5
+	},
+	"result": {
+		"url":"http://${hostname}:90/jenkins/get.php",
+		"expected_response":"ok",
+		"time_wait": 5
+	}
+}
+"""
+def json_object = readJSON text: json_str
+echo "${json_object.start}"
+/*Map json_object = (Map) new JsonSlurper().parseText(json_str)
+Map start = json_object.start
+Map testing = json_object.testing
+Map result = json_object.result*/
+//json_object = null
+stage('Start') {
+    waitRequest(json_object.start.url,json_object.start.expected_response,json_object.start.time_wait)
+}
+stage('Testing') {
+    waitRequest(json_object.testing.url,json_object.testing.expected_response,json_object.testing.time_wait)
+}
+stage('Results') {
+    waitRequest(json_object.result.url,json_object.result.expected_response,json_object.result.time_wait)
+}
+
+
+def waitRequest(def url,def expected_response,def time_wait) {
+    echo "waitRequest"
+    echo "url : ${url}"
+    echo "expected_response : ${expected_response}"
+    echo "time_wait : ${time_wait}"
+    echo "waitUntil"
+    waitUntil {
+        //sleep time_wait
+        sleep 5
+        echo "after sleep"
+        return httpRequest(url,expected_response)
+    }
+}
+def httpRequest(def url,def expected_response) {
+    echo "httpRequest"
+    try{
+        echo "url : ${url}"
+        echo "expected_response : ${expected_response}"
+        def response = httpRequest "${url}"
+        //def response = httpRequest "http://${hostname}:90/jenkins/get.php"
+        //def response = httpRequest 'https://dog.ceo/api/breeds/list/all'
+        echo "Status: ${response.status}"
+        println('Response: '+response.content)
+        
+        //def json = new JsonSlurper().parseText(response.content)
+        //echo "Dogs: ${json.message.keySet()}"
+        //return response.content=="finish"
+        return response.content==expected_response
+    }catch(Exception e){
+        echo "error httpRequest"
+        println(e)
+    }
+    return false
+}
