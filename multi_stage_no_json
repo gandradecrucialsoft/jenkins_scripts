@@ -1,0 +1,105 @@
+import groovy.json.JsonSlurper
+def hostname="10.200.1.58"
+def json_object = [
+        start: [
+            url: "http://${hostname}:90/jenkins/get.php",
+            expected_response: "testing",
+            time_wait: 5
+        ],
+        testing: [
+            url: "http://${hostname}:90/jenkins/get.php",
+            expected_response: "finish",
+            time_wait: 5
+        ],
+        result: [
+            url: "http://${hostname}:90/jenkins/get.php",
+            expected_response: "ok",
+            time_wait: 5
+        ],
+    ]
+node {
+    stage('Prepare') {
+        echo "${json_object.start.url}"
+        echo "${json_object.start.expected_response}"
+        echo "${json_object.start.time_wait}"
+        
+        echo "${json_object.testing.url}"
+        echo "${json_object.testing.expected_response}"
+        echo "${json_object.testing.time_wait}"
+        
+        echo "${json_object.result.url}"
+        echo "${json_object.result.expected_response}"
+        echo "${json_object.result.time_wait}"
+    }
+    stage('Start') {
+        waitRequest(json_object.start.url,json_object.start.expected_response,json_object.start.time_wait)
+    }
+    stage('Testing') {
+        waitRequest(json_object.testing.url,json_object.testing.expected_response,json_object.testing.time_wait)
+    }
+    stage('Results') {
+        waitRequest(json_object.result.url,json_object.result.expected_response,json_object.result.time_wait)
+    }
+}
+
+def waitRequest(String url,String expected_response,int time_wait) {
+    echo "waitRequest"
+    echo "url : ${url}"
+    echo "expected_response : ${expected_response}"
+    echo "time_wait : ${time_wait}"
+    try{
+        echo "waitUntil"
+        waitUntil {
+            //sleep time_wait
+            sleep 5
+            echo "after sleep"
+            return httpRequest(url,expected_response)
+        }
+    }catch(Exception e){
+        echo "waitRequest"
+        println(e)
+    }
+}
+def httpRequest(String url,String expected_response) {
+    echo "httpRequest"
+    try{
+        echo "url : ${url}"
+        echo "expected_response : ${expected_response}"
+        def response = httpRequest "${url}"
+        //def response = httpRequest "http://${hostname}:90/jenkins/get.php"
+        //def response = httpRequest 'https://dog.ceo/api/breeds/list/all'
+        echo "Status: ${response.status}"
+        println('Response: '+response.content)
+        
+        //def json = new JsonSlurper().parseText(response.content)
+        //echo "Dogs: ${json.message.keySet()}"
+        //return response.content=="finish"
+        return response.content==expected_response
+    }catch(Exception e){
+        echo "httpRequest"
+        println(e)
+    }
+    return false
+}
+
+def parseStringWithVariables(String string,Map map) {
+    for (def data : map) {
+        string = string.replace("\${" + data.getKey() + "}", data.getValue().toString())
+    }
+    return string
+}
+
+@NonCPS
+def parseJson(String string) {
+    try{
+        //def objectParse = new  JsonSlurper().parseText(string)
+        //return objectParse
+        new groovy.json.JsonSlurperClassic().parseText(string)
+        //final slurper = new JsonSlurper()
+        //return new HashMap<>(slurper.parseText(string))
+    }catch(Exception e){
+        println(e)
+        error("error parse json")
+    }
+    return null
+}
