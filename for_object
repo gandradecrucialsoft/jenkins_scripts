@@ -1,0 +1,19 @@
+//https://emilwypych.com/2018/03/18/variable-as-a-groovy-map-key/?cn-reloaded=1
+def groovyApps = [
+        names: [ 'first', 'second', 'third' ],
+        envs: [
+            first: [ 'dev', 'prod' ],
+            second: [ 'dev', 'prod' ],
+            third: ['dev', 'stage', 'live']
+        ]
+    ]
+ 
+for (i in groovyApps.names) {
+    print "App is: $i \n"
+ 
+    for (j in groovyApps.envs."$i") {  
+        print "Brand for App is: $j \n"
+    }
+    
+    print "========\n\n"
+}
