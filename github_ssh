@@ -1,0 +1,12 @@
+#copy public key to github
+#enter in id "git" credentials private key
+node{
+    stage("Checkout"){
+        //withCredentials([string(credentialsId: 'git_pwd_ssh', variable: 'git_pwd_ssh')]) {
+            //sh 'git clone ssh://gandrade@sculptor:22/opt/desatest.git'
+        //}
+        git credentialsId: 'git',
+            url: 'git@github.com:gandradecrucialsoft/prueba.git'
+        sh 'ls'
+    }
+}
