@@ -1,5 +1,13 @@
-#copy public key to github
-#enter in id "git" credentials private key
+/*
+https://mimiz.github.io/2017/08/09/Jenkins-Docker-and-Gitlab.html
+docker exec -it 6db2a0f44469 /bin/bash				[para ejecutar estos comandos debe estar arriba el contenedor]
+ssh-keygen
+ls ~/.ssh/
+cat ~/.ssh/id_rsa.pub
+cat ~/.ssh/id_rsa
+copy public key to github
+enter in id "git" credentials private key
+*/
 node{
     stage("Checkout"){
         //withCredentials([string(credentialsId: 'git_pwd_ssh', variable: 'git_pwd_ssh')]) {
